@@ -6,10 +6,8 @@ int S[MAX], c=0, n;
 
 void print();
 
-main(){
+int main(){
   int i,j,k,tam;
-  
-  system("COLOR F0");
   printf("nhap n= "); scanf("%d", &n);
   for (i=1; i<=n; i++) S[i]=i; print();
   while (1){
@@ -23,7 +21,8 @@ main(){
       j++; k--;
 	}
     print();
-  }  
+  }
+  return 0;  
 }
 
 void print()

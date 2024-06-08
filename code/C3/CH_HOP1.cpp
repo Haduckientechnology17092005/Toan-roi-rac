@@ -1,12 +1,11 @@
 #include <stdio.h>
-#include <conio.h>
 
 #define MAX 20
 int S[MAX], a[MAX]={0}, c=0, n, k; //bo qua S[0].
 
 void print();
 
-main()
+int main()
 {
 
   int i,j,x,ok;
@@ -35,6 +34,7 @@ main()
 	}
 	print(); 
   }
+  return 0;
 }
 
 void print()

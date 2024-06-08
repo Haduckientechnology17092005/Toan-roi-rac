@@ -5,13 +5,14 @@ int S[MAX]={0}, c=0, n, k, a, b; //cho S[0]=0.
 
 void Try(int), print();
 
-main()
+int main()
 {
   printf("nhap loai n= "); scanf("%d", &a);
   printf("nhap so phan tu k= "); scanf("%d", &b);
   n=b+a-1; k=a-1;
   Try(1);
   getchar();
+  return 0;
 }
 
 void Try(int i)

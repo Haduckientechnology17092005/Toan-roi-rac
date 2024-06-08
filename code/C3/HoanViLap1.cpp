@@ -1,6 +1,5 @@
 #include <stdio.h>
-#include <dos.h>
-#include <conio.h>
+
 
 #define MAX 20
 int S[MAX]={0},a[MAX]={0},c=0, n=0; 

@@ -2,14 +2,12 @@
 // Doc tu file
 
 #include <stdio.h>
-#include <conio.h>
 #include <time.h>
 #include "console.h"
 #include "console.cpp"
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <windows.h>
 #define MAX 65
 
 typedef int VT[MAX];
@@ -269,7 +267,7 @@ void readfile()
   int i,j;
   char fn[30];
 
-  printf("File(*.TXT):"); gets(fn); strcat(fn,".TXT");
+  printf("File(*.TXT):"); fgets(fn); strcat(fn,".TXT");
   f=fopen(fn,"rt");
   fscanf(f,"%d%d\n",&n,&k); kb=k;
   for (i=0; i<k; i++){

@@ -6,7 +6,7 @@ int S[8], a[8], b[15], c[15], sol=0;
 
 void Try(int), print();
 
-main(){
+int main(){
   int i;
 
   system("COLOR F0");
@@ -14,6 +14,7 @@ main(){
   for (i=0; i<15; i++) b[i]=1;
   for (i=0; i<15; i++) c[i]=1;
   Try(0);
+  return 0;
 }
 
 void Try(int i)

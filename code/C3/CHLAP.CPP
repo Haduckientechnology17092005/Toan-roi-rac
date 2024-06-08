@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include <conio.h>
-#include <dos.h>
 
 #define MAX 20
 int S[MAX], c=0, n, k; //bo qua S[0].
 
 void Try(int), Print();
 
-main(){
+int main(){
 
   printf("nhap n, k:"); scanf("%d%d", &n,&k);
   Try(1);
+
+  return 0;
 }
 
 void Try(int i)

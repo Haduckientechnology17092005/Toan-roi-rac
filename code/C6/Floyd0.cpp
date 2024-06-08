@@ -11,13 +11,13 @@ void Floyd(GRAPH,GRAPH);
 void Path(int,int);
 GRAPH a,b,p={0};
 
-main()
+int main()
 {
 	int i,j,u,v;
 	FILE *f;
 	char fn[20];
 	
-	printf("File: "); gets(fn);
+	printf("File: "); fgets(fn, 20, stdin);
     f=fopen(fn,"rt");
 	fscanf(f,"%d\n",&n);
 	for (i=0; i<n; i++){
@@ -43,6 +43,7 @@ main()
 	printf("%d-->%d:\n%d",u,v,u); Path(u,v);printf("-->%d",v);
 	printf("\nDo dai = %d ",b[u][v]);
 	getchar();	
+	return 0;
 }
 
 void Floyd(GRAPH a, GRAPH b)

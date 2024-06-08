@@ -1,130 +1,132 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "dothi.h"
 
-GRAPH C,F={0},D; //khoi dau luong 0, D de danh dau cung nghich
-int pr[MAX];//dinh truoc moi dinh tren duong di
-int Fmax,n,s,t;
-void readfile(), writefile(), PrintGraph(GRAPH a);
-int CoDuongtang(), TimLuong();
+#define INF 9999
+#define MAX 100
 
-int main()
-{
+typedef int GRAPH[MAX][MAX];
+
+GRAPH C, F = {0}, D; // Initialize flow to 0, D for marking reverse edges
+int pr[MAX]; // Predecessor array for each vertex
+int Fmax, n, s, t;
+
+void readfile();
+void writefile();
+int CoDuongtang();
+int TimLuong();
+
+int main() {
     readfile();
-    printf("So dinh cua mang da cho:");printf("%d", n);
-    printf("\nDinh phat:");printf("%d", s+1);
-    printf("\nDinh thu:");printf("%d", t+1);
-	printf("\nMa tran trong so bieu dien mang:\n\n"); 
-    PrintGraph(C);
-    Fmax=TimLuong();
-    printf("\nThe maximum of flow = %d\n",Fmax);
-    PrintGraph(F);
-    //writefile();
+    printf("Number of vertices: %d\n", n);
+    printf("Source vertex: %d\n", s + 1);
+    printf("Sink vertex: %d\n", t + 1);
+
+    Fmax = TimLuong();
+    printf("\nThe maximum flow = %d\n", Fmax);
+    
+    writefile();
     return 0;
 }
-void readfile()
-{
-	char fn[20]; FILE *f; int i,j;
 
-	printf("File (*.INP): "); gets(fn);
-	if (!strchr(fn,'.')) strcat(fn,".INP");
-	f=fopen(fn,"rt");
-	fscanf(f,"%d%d%d",&n,&s,&t);
-	for (i=0; i<n;i++){
-	  for (j=0;j<n;j++) fscanf(f,"%d",&C[i][j]);
-	  fscanf(f,"\n");
-   }
-   fclose(f);
-}
-
-void writefile()
-{
-	char fn[20]; FILE *f; int i,j;
-
-	printf("Out File (*.OUT): "); gets(fn);
-	if (!strchr(fn,'.')) strcat(fn,".OUT");
-	f=fopen(fn,"wt");
-	fprintf(f,"%d-->%d, Maxflow = %d\n",s+1,t+1,Fmax);
-	for (i=0; i<n;i++){
-	  for (j=0;j<n;j++) fprintf(f,"%d ",F[i][j]);
-	  fprintf(f,"\n");
-   }
-   fclose(f);
-}
-void PrintGraph(GRAPH a)
-{
+void readfile() {
+    char fn[20]; 
+    FILE *f; 
     int i, j;
+
+    printf("File (*.INP): "); 
+    fgets(fn, sizeof(fn), stdin);
+    fn[strcspn(fn, "\n")] = 0; // Remove newline character if present
+    if (!strchr(fn, '.')) strcat(fn, ".INP");
     
-    printf("\n");
-    for(i=0; i<n; ++i){
-      	for(j=0; j<n; ++j) printf(" %3d", a[i][j]);
-    	printf("\n");
+    f = fopen(fn, "r");
+    if (f == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
     }
+    
+    fscanf(f, "%d%d%d", &n, &s, &t);
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            fscanf(f, "%d", &C[i][j]);
+        }
+    }
+    fclose(f);
 }
 
-int CoDuongtang()
-{
-  	int i,j,sQ,eQ;
-	SET T={0},Q; //dau va cuoi hang doi
-   	  
-	for(i=0; i<n; i++)	
-		for(j=0; j<n; ++j) D[i][j]=0;
-	sQ=0;eQ=0;Q[sQ]=s;
-    while (sQ<=eQ && !T[t]){
-       	i=Q[sQ]; sQ++; T[i]=1; //lay ra khoi Q dinh i va danh dau i da duyet
-        if (C[i][t]-F[i][t]>0){
-        	T[t]=1; pr[t]=i;
-		}//ket thuc som neu gap dinh t
-		else 
-		for(j=0; j<n; ++j){
-		    if (!T[j])
-			  if (C[i][j]-F[i][j]>0){ 
-			  	eQ++; Q[eQ]=j; pr[j]=i; 
-	    	  }
-	    	  else
-	    	  if (C[j][i] && F[j][i]>0){ 
-			  	eQ++; Q[eQ]=j; pr[j]=i; D[i][j]=-1;
-	    	  }
-       }
-    }
-    if (T[t]){
-	    printf("Duong tang luong:\n");
-    	j=t;
-    	while (j!=s){
-    		i=pr[j];
-	    	if (D[i][j]<0) printf("%d-->",j+1);else printf("%d<--",j+1);
-			j=i;
-    	}
-    	printf("%d\n",j+1); 
-	}
-    return T[t];
-  }
+void writefile() {
+    char fn[20]; 
+    FILE *f; 
+    int i, j;
 
-int TimLuong()
-{
-  int  i,j,max,delta;
-  
-  while (CoDuongtang()){
-        // Tinh luong dieu chinh delta
-		delta=INF; 
-		j=t; 
-        while (j!=s){
-		    i=pr[j]; 
-		    if (D[i][j]<0 && F[j][i]<delta) delta=F[j][i];
-            else if (C[i][j]-F[i][j]<delta)
-			 		delta=C[i][j]-F[i][j];
-            j=i;
+    printf("Out File (*.OUT): "); 
+    fgets(fn, sizeof(fn), stdin);
+    fn[strcspn(fn, "\n")] = 0; // Remove newline character if present
+    if (!strchr(fn, '.')) strcat(fn, ".OUT");
+    
+    f = fopen(fn, "w");
+    if (f == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    fprintf(f, "%d-->%d, Maxflow = %d\n", s + 1, t + 1, Fmax);
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            fprintf(f, "%d ", F[i][j]);
         }
-        // Tang luong doc theo P trong pr
-        j=t;
-        while (j!=s){
-		    i=pr[j];
-            if (D[i][j]<0) F[j][i]-=delta; else F[i][j]+=delta;
-            j=i;
+        fprintf(f, "\n");
+    }
+    fclose(f);
+}
+
+int CoDuongtang() {
+    int i, j, sQ, eQ;
+    int T[MAX] = {0}, Q[MAX]; // T array to mark visited nodes
+
+    memset(D, 0, sizeof(D)); // Reset D array
+    sQ = 0; eQ = 0; Q[sQ] = s;
+
+    while (sQ <= eQ && !T[t]) {
+        i = Q[sQ++];
+        T[i] = 1; // Mark node i as visited
+        if (C[i][t] - F[i][t] > 0) {
+            T[t] = 1; pr[t] = i;
+        } else {
+            for (j = 0; j < n; j++) {
+                if (!T[j]) {
+                    if (C[i][j] - F[i][j] > 0) { 
+                        Q[++eQ] = j; pr[j] = i; 
+                    } else if (C[j][i] && F[j][i] > 0) { 
+                        Q[++eQ] = j; pr[j] = i; D[i][j] = -1;
+                    }
+                }
+            }
         }
-        printf("Voi delta = %d\n",delta); getchar();
-  }
-  printf("\nHet duong tang luong...\n");
-  for(max=0,j=0; j<n; ++j) max+=F[s][j];
-  return max;
+    }
+    return T[t];
+}
+
+int TimLuong() {
+    int i, j, max, delta;
+
+    while (CoDuongtang()) {
+        // Calculate the adjustment flow delta
+        delta = INF; 
+        for (j = t; j != s; j = pr[j]) {
+            i = pr[j]; 
+            if (D[i][j] < 0 && F[j][i] < delta) delta = F[j][i];
+            else if (C[i][j] - F[i][j] < delta) delta = C[i][j] - F[i][j];
+        }
+        // Increase flow along the augmenting path in pr
+        for (j = t; j != s; j = pr[j]) {
+            i = pr[j];
+            if (D[i][j] < 0) F[j][i] -= delta; else F[i][j] += delta;
+        }
+        printf("With delta = %d\n", delta);
+    }
+    
+    printf("\nNo more augmenting path...\n");
+    for (max = 0, j = 0; j < n; j++) max += F[s][j];
+    return max;
 }

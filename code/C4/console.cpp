@@ -1,80 +1,91 @@
 #include <stdio.h>
-#include <conio.h>
 #include "console.h"
-
 
 int inputKey()
 {
-	if (_kbhit())
-	{
-		int key = _getch();
-
-		if (key == 224)	// special key
-		{
-			key = _getch();
-			return key + 1000;
-		}
-
-		return key;
-	}
-	else
-	{
-		return key_none;
-	}
-
-	return key_none;
+    int ch = getch();
+    if (ch == ERR) {
+        return key_none;
+    }
+    if (ch == 27) { // handle special keys
+        ch = getch();
+        if (ch == 91) {
+            ch = getch();
+            switch (ch) {
+                case 65: return key_Up;
+                case 66: return key_Down;
+                case 67: return key_Right;
+                case 68: return key_Left;
+                default: return key_none;
+            }
+        }
+    }
+    return ch;
 }
-
 
 //-------------------------Screen-------------------------
 void clrscr()
 {
-	CONSOLE_SCREEN_BUFFER_INFO	csbiInfo;                  
-	HANDLE	hConsoleOut;
-	COORD	Home = {0,0};
-	DWORD	dummy;
-
-	hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	GetConsoleScreenBufferInfo(hConsoleOut,&csbiInfo);
-
-	FillConsoleOutputCharacter(hConsoleOut,' ',csbiInfo.dwSize.X * csbiInfo.dwSize.Y,Home,&dummy);
-	csbiInfo.dwCursorPosition.X = 0;
-	csbiInfo.dwCursorPosition.Y = 0;
-	SetConsoleCursorPosition(hConsoleOut,csbiInfo.dwCursorPosition);
+    clear();
+    refresh();
 }
-
 
 //screen: goto [x,y]
-void gotoXY (int column, int line)
+void gotoXY(int column, int line)
 {
-	COORD coord;
-	coord.X = column;
-	coord.Y = line;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+    move(line, column);
+    refresh();
 }
-
 
 //screen: get [x]
 int whereX()
 {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-		return csbi.dwCursorPosition.X;
-	return -1;
+    int x, y;
+    getyx(stdscr, y, x);
+    return x;
 }
-
 
 //screen: get [y]
 int whereY()
 {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-		return csbi.dwCursorPosition.Y;
-	return -1;
+    int x, y;
+    getyx(stdscr, y, x);
+    return y;
 }
 
-
-void TextColor (int color)
+void TextColor(int color)
 {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE) , color);
+    attron(COLOR_PAIR(color));
+}
+
+int main()
+{
+    initscr(); // start ncurses mode
+    keypad(stdscr, TRUE); // enable keyboard mapping
+    nodelay(stdscr, TRUE); // non-blocking input
+    noecho(); // do not print input values
+    start_color(); // start color functionality
+
+    // Define color pairs
+    for (int i = 0; i < 16; ++i) {
+        init_pair(i, i, ColorCode_Back);
+    }
+
+    clrscr();
+    gotoXY(10, 10);
+    printw("Hello, World!");
+    refresh();
+
+    int ch;
+    while ((ch = inputKey()) != 'q') {
+        if (ch != key_none) {
+            clrscr();
+            gotoXY(10, 10);
+            printw("Key pressed: %d", ch);
+            refresh();
+        }
+    }
+
+    endwin(); // end ncurses mode
+    return 0;
 }

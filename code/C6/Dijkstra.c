@@ -35,7 +35,6 @@ int main() {
             }
         }
     }
-    fclose(file);
 
     // Đặt lại a[i][j] = INF nếu không có cạnh (i,j)
 	for (int i = 1; i <= n; i++)
@@ -53,6 +52,8 @@ int main() {
     printf("Nhap dinh muon di chuyen den: ");
     scanf("%d", &v);
     min_road(v);
+    fclose(file);
+    return 0;
 }
 
 void make_D() {
