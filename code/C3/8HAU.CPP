@@ -8,7 +8,6 @@ void Try(int), print();
 
 int main(){
   int i;
-
   system("COLOR F0");
   for (i=0; i<8; i++) a[i]=1;
   for (i=0; i<15; i++) b[i]=1;

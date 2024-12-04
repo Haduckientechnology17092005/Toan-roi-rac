@@ -46,16 +46,13 @@ void print() {
 
 int Next() {
     int i = n - 1, j, tam, k;
-
     while (i > 0 && S[i] > S[i + 1]) i--;
     if (i == 0) return 0; 
-
     j = n;
     while (S[j] < S[i]) j--;
     tam = S[i];
     S[i] = S[j];
     S[j] = tam;
-
     j = i + 1; k = n;
     while (j < k) {
         tam = S[j];
@@ -64,6 +61,5 @@ int Next() {
         j++;
         k--;
     }
-
     return 1; 
 }
